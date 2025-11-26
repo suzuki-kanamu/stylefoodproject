@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feane予約送信確認</title>
+  <style>
+    body {
+      background-color: #fff6e1ff;
+      color: #333;
+      text-align: center;
+      padding: 2em;
+      line-height: 1.6;
+    }
+    h2 {
+      font-size: 1.8em;
+      color: #d35400;
+      margin-bottom: 1em;
+    }
+    p {
+      margin: 1em 0;
+    }
+    .info {
+      margin-top: 1em;
+      text-align: left;
+      display: inline-block;
+}
+    .info br {
+      margin-bottom: 0.5em;
+    }
+    .button-link {
+      display: inline-block;
+      margin-top: 2em;
+      padding: 0.8em 1.5em;
+      background-color: #d35400;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .button-link:hover {
+      background-color: #e67e22;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>{{ data.name }} 様<br>ご予約ありがとうございます</h2>
+
+  <p>以下の内容でご予約を承りました</p>
+
+  <p class="info">
+    予約日：{{ data.date }}<br>
+    時間：{{ data.time }}<br>
+    人数：{{ data.people }} 名<br>
+    電話番号：{{ data.phone }}<br>
+    メールアドレス：{{ data.email }}
+  </p>
+
+  <p>
+    ご予約内容を記載した確認メールをお送りしました。<br>
+    ご不明点がございましたらお気軽にご連絡ください。
+  </p>
+
+  <p>Feane一同、{{ data.name }} 様のご来店を心よりお待ちしております。</p>
+
+  <a href="{% url 'index' %}" class="button-link">トップページに戻る</a>
+
+</body>
+</html>
