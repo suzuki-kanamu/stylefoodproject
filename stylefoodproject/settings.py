@@ -25,8 +25,11 @@ SECRET_KEY = 'django-insecure-0b2#o2fv=cp@v*_u&wdtv-ck$@v&wwqxj_hoodv7%m_&s66bij
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'suzukikanamu.pythonanywhere.com',  # 本番用
+    'localhost',                        # ローカル開発用
+    '127.0.0.1',                        # ローカル開発用
+]
 
 # Application definition
 
@@ -55,7 +58,7 @@ ROOT_URLCONF = 'stylefoodproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'main' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +73,8 @@ TEMPLATES = [
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'main' / 'templates']
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 STATICFILES_DIRS = [BASE_DIR / 'main' / 'static']
 
 

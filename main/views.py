@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from .forms import ReservationForm, ContactForm
 from datetime import date
 
-
 def index(request):
     return render(request, 'index.html')
 
@@ -19,9 +18,6 @@ def takeout(request):
 def thanks(request):
     data = request.session.get('reservation_data')
     return render(request, 'thanks.html', {'data': data})
-
-def reserve_view(request):
-    return render(request, 'reserve.html')
 
 def review(request):
     return render(request, 'review.html')
@@ -43,49 +39,26 @@ def contact(request):
         form = ContactForm()
     return render(request, 'contact.html', {'form': form})
 
-def reserve_seat(request):
-    today = date.today().isoformat()
-
-    if request.method == 'POST':
-        form = ReservationForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-
-            # 日付,日時を文字列に変換しないとだめらしいよ
-            data['date'] = str(data['date'])
-            data['time'] = str(data['time'])
-
-            message = (
-                f"名前: {data['name']}\n"
-                f"電話番号: {data['phone']}\n"
-                f"メールアドレス: {data['email']}\n"
-                f"人数: {data['people']}名\n"
-                f"予約日: {data['date']}\n"
-                f"予約時間: {data['time']}"
-            )
-
-
-            request.session['reservation_data'] = data
-            return redirect('thanks')
-    else:
-        form = ReservationForm()
-
-    return render(request, 'book.html', {'form': form, 'today': today})
-
-
 def reserve_view(request):
+    today = date.today().isoformat()
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
 
-            # メール本文の作成
+            # JSON化できるように文字列化
+            data['date'] = data['date'].isoformat()              # 'YYYY-MM-DD'
+            data['time'] = data['time'].strftime('%H:%M')        # 'HH:MM'
+
+            # thanks用にセッション保存
+            request.session['reservation_data'] = data
+
             subject = f"【Feane】{data['name']} 様 ご予約確認メール"
             message = (
                 f"{data['name']} 様\n\n"
                 f"以下の内容でご予約を承りました。\n\n"
                 f"予約日：{data['date']}\n"
-                f"来店時間：{data['time'].strftime('%H:%M')}\n"
+                f"来店時間：{data['time']}\n"
                 f"人数：{data['people']} 名\n"
                 f"電話番号：{data['phone']}\n"
                 f"メールアドレス：{data['email']}\n\n"
@@ -93,18 +66,15 @@ def reserve_view(request):
                 "--Feane---スタッフ一同--"
             )
 
-            # メール送信
             send_mail(
                 subject,
                 message,
-                'feane@example.com',  # 送信元メールアドレス（settings.pyで定義してもOK）
-                [data['email']],      # 宛先
+                'feane@example.com',
+                [data['email']],
                 fail_silently=False,
             )
-
-            # thanksページへ遷移
-            return render(request, 'thanks.html', {'data': data})
+            return redirect('thanks')
     else:
         form = ReservationForm()
 
-    return render(request, 'book.html', {'form': form})
+    return render(request, 'book.html', {'form': form, 'today': today})
